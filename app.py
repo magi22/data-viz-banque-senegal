@@ -387,8 +387,8 @@ footer strong { color: var(--ink); }
             <li>
                 <span class="m-icon">📄</span>
                 <div>
-                    <strong>Extraction PDF (pdfplumber)</strong>
-                    Traitement automatisé des rapports BCEAO
+                    <strong>Rapport BCEAO 2022</strong>
+                    <a href="https://www.bceao.int/fr/publications/bilans-et-comptes-de-resultats-des-banques-etablissements-financiers-et-compagnies" target="_blank" rel="noopener" style="color:var(--teal);font-size:12px;">Bilans et comptes de résultat UMOA — bceao.int ↗</a>
                 </div>
             </li>
             <li>
