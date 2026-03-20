@@ -249,6 +249,79 @@ footer strong { color: var(--ink); }
     .data-section { padding: 40px 20px; }
     footer { padding: 20px; }
 }
+
+/* BACK TO TOP */
+#back-top {
+    position: fixed; bottom: 96px; right: 24px; z-index: 500;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--ink); color: #fff; border: none; cursor: pointer;
+    font-size: 18px; display: none; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,.18); transition: background .2s, transform .2s;
+}
+#back-top:hover { background: var(--teal); transform: translateY(-2px); }
+#back-top.show { display: flex; }
+
+/* CHATBOT */
+#chat-btn {
+    position: fixed; bottom: 24px; right: 24px; z-index: 600;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--teal); color: #fff; border: none; cursor: pointer;
+    font-size: 22px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(15,118,110,.35); transition: transform .2s, background .2s;
+}
+#chat-btn:hover { transform: scale(1.08); background: var(--teal2); }
+#chat-win {
+    position: fixed; bottom: 88px; right: 24px; z-index: 600;
+    width: 320px; max-height: 480px; background: #fff;
+    border-radius: 18px; box-shadow: 0 8px 40px rgba(0,0,0,.15);
+    border: 1px solid var(--border); display: none; flex-direction: column;
+    overflow: hidden;
+}
+#chat-win.open { display: flex; }
+.chat-head {
+    background: var(--ink); color: #fff; padding: 14px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.chat-head-title { font-size: 14px; font-weight: 700; }
+.chat-head-sub { font-size: 10px; color: #94a3b8; margin-top: 2px; }
+#chat-close { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 18px; line-height: 1; }
+#chat-close:hover { color: #fff; }
+.chat-msgs {
+    flex: 1; overflow-y: auto; padding: 14px 14px 8px;
+    display: flex; flex-direction: column; gap: 10px;
+}
+.chat-msgs::-webkit-scrollbar { width: 3px; }
+.chat-msgs::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 2px; }
+.msg { max-width: 88%; padding: 9px 12px; border-radius: 12px; font-size: 12px; line-height: 1.6; }
+.msg.bot { background: #f1f5f9; color: var(--ink); align-self: flex-start; border-bottom-left-radius: 4px; }
+.msg.user { background: var(--teal); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.chat-topics {
+    padding: 6px 14px 10px; display: flex; flex-wrap: wrap; gap: 6px;
+}
+.topic-btn {
+    font-size: 11px; font-weight: 600; color: var(--teal);
+    background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 20px;
+    padding: 4px 12px; cursor: pointer; transition: background .15s;
+    white-space: nowrap;
+}
+.topic-btn:hover { background: #ccfbf1; }
+.chat-input-row {
+    padding: 10px 14px 14px; display: flex; gap: 8px;
+    border-top: 1px solid var(--border);
+}
+#chat-input {
+    flex: 1; border: 1px solid var(--border); border-radius: 20px;
+    padding: 7px 14px; font-size: 12px; outline: none;
+    font-family: inherit;
+}
+#chat-input:focus { border-color: var(--teal); }
+#chat-send {
+    background: var(--teal); color: #fff; border: none; border-radius: 50%;
+    width: 32px; height: 32px; cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background .15s;
+}
+#chat-send:hover { background: var(--teal2); }
 </style>
 </head>
 <body>
@@ -269,7 +342,7 @@ footer strong { color: var(--ink); }
         <h1>Suivi des<br>performances<br><strong>bancaires</strong></h1>
         <p class="hero-desc">
             Analyse comparative de 24 établissements bancaires sénégalais
-            sur la période 2015–2020, à partir des données officielles BCEAO
+            sur la période 2015–2022, à partir des données officielles BCEAO
             et de la base BASE_SENEGAL2.
         </p>
         <div class="hero-actions">
@@ -285,11 +358,11 @@ footer strong { color: var(--ink); }
         </div>
         <div class="stat-row">
             <span class="stat-row-label">Observations</span>
-            <span class="stat-row-val">134</span>
+            <span class="stat-row-val">180</span>
         </div>
         <div class="stat-row">
             <span class="stat-row-label">Années couvertes</span>
-            <span class="stat-row-val">6 <span>2015–2020</span></span>
+            <span class="stat-row-val">8 <span>2015–2022</span></span>
         </div>
         <div class="stat-row">
             <span class="stat-row-label">Indicateurs clés</span>
@@ -408,6 +481,104 @@ footer strong { color: var(--ink); }
     <a href="/bancaire/" style="color: var(--teal); font-weight: 700; text-decoration: none;">Dashboard Bancaire →</a>
 </footer>
 
+<!-- BACK TO TOP -->
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Retour en haut">↑</button>
+
+<!-- CHATBOT AIDE -->
+<button id="chat-btn" onclick="toggleChat()" title="Aide">💬</button>
+
+<div id="chat-win">
+  <div class="chat-head">
+    <div>
+      <div class="chat-head-title">🏦 Aide SenBank Analytics</div>
+      <div class="chat-head-sub">Réponse instantanée</div>
+    </div>
+    <button id="chat-close" onclick="toggleChat()">×</button>
+  </div>
+  <div class="chat-msgs" id="chat-msgs">
+    <div class="msg bot">Bonjour ! Je suis l'assistant de <strong>SenBank Analytics</strong>. Comment puis-je vous aider ?</div>
+  </div>
+  <div class="chat-topics" id="chat-topics">
+    <button class="topic-btn" onclick="askTopic('charger')">📂 Charger des données</button>
+    <button class="topic-btn" onclick="askTopic('dashboard')">📊 Utiliser le dashboard</button>
+    <button class="topic-btn" onclick="askTopic('filtres')">🔍 Les filtres</button>
+    <button class="topic-btn" onclick="askTopic('pdf')">📄 Rapport PDF</button>
+    <button class="topic-btn" onclick="askTopic('sources')">📖 Sources</button>
+    <button class="topic-btn" onclick="askTopic('ratios')">📈 Les ratios</button>
+  </div>
+  <div class="chat-input-row">
+    <input id="chat-input" type="text" placeholder="Posez votre question..." onkeydown="if(event.key==='Enter')sendMsg()">
+    <button id="chat-send" onclick="sendMsg()">→</button>
+  </div>
+</div>
+
+<script>
+const REPLIES = {
+  charger: "Pour charger vos données :<br><br>1. Cliquez sur <strong>Ouvrir le dashboard</strong><br>2. Si aucune donnée n'est détectée, une zone d'import apparaît<br>3. Glissez-déposez votre fichier <strong>BASE_SENEGAL2.xlsx</strong> ou <strong>banques_clean.csv</strong><br>4. Le dashboard se charge automatiquement.",
+  dashboard: "Le dashboard bancaire propose :<br><br>• <strong>Vue d'ensemble</strong> — classement et parts de marché<br>• <strong>Analyse approfondie</strong> — scatter, treemap, carte, scores<br>• <strong>Rapport & Données</strong> — tableau complet et export PDF<br><br>Utilisez la barre latérale gauche pour filtrer par année, banque ou groupe.",
+  filtres: "Les filtres se trouvent dans la <strong>barre latérale gauche</strong> du dashboard :<br><br>• <strong>Année</strong> — sélectionner l'exercice (2015–2022)<br>• <strong>Banque(s)</strong> — une ou plusieurs banques<br>• <strong>Groupe</strong> — Locaux, Continentaux, Internationaux…<br>• <strong>Indicateur</strong> — changer la métrique des graphiques<br><br>Ils restent visibles en permanence, même en scrollant.",
+  pdf: "Pour générer un rapport PDF :<br><br>1. Dans la sidebar gauche, descendez jusqu'à <strong>Rapport PDF</strong><br>2. Sélectionnez la banque dans la liste déroulante<br>3. Cliquez <strong>↓ Télécharger</strong><br><br>Le PDF contient les indicateurs clés et l'historique complet de la banque.",
+  sources: "Les données proviennent de deux sources :<br><br>• <strong>BASE_SENEGAL2.xlsx</strong> — données 2015–2020 collectées auprès des banques<br>• <strong>Rapport BCEAO 2022</strong> — données 2021–2022 extraites du rapport officiel UMOA<br><br>Couverture : <strong>24 banques, 8 ans, 180 observations</strong>.",
+  ratios: "Les ratios calculés automatiquement :<br><br>• <strong>ROA</strong> — Résultat net / Bilan × 100<br>• <strong>Coeff. d'exploitation</strong> — Charges / PNB × 100 (norme &lt; 60%)<br>• <strong>Taux de transformation</strong> — Emplois / Ressources × 100<br>• <strong>Solvabilité</strong> — Fonds propres / Bilan × 100<br>• <strong>Score global</strong> — Score composite sur 100 pts",
+};
+
+const KEYWORDS = [
+  [['charger','upload','fichier','excel','csv','importer','données'], 'charger'],
+  [['dashboard','tableau de bord','graphique','chart','visualis'], 'dashboard'],
+  [['filtre','filtrer','année','banque','groupe','indicateur'], 'filtres'],
+  [['pdf','rapport','télécharger','download'], 'pdf'],
+  [['source','bceao','données','base','origine'], 'sources'],
+  [['ratio','roa','coefficient','solvabilité','taux','score'], 'ratios'],
+];
+
+function toggleChat(){
+  const w=document.getElementById('chat-win');
+  w.classList.toggle('open');
+}
+
+function addMsg(txt, cls){
+  const d=document.createElement('div');
+  d.className='msg '+cls;
+  d.innerHTML=txt;
+  const c=document.getElementById('chat-msgs');
+  c.appendChild(d);
+  c.scrollTop=c.scrollHeight;
+}
+
+function askTopic(key){
+  const labels={'charger':'Charger des données','dashboard':'Utiliser le dashboard',
+    'filtres':'Les filtres','pdf':'Rapport PDF','sources':'Sources','ratios':'Les ratios'};
+  addMsg(labels[key],'user');
+  setTimeout(()=>addMsg(REPLIES[key],'bot'),300);
+  document.getElementById('chat-topics').style.display='none';
+}
+
+function sendMsg(){
+  const inp=document.getElementById('chat-input');
+  const txt=inp.value.trim();
+  if(!txt) return;
+  addMsg(txt,'user');
+  inp.value='';
+  document.getElementById('chat-topics').style.display='none';
+  const low=txt.toLowerCase();
+  let reply="Je n'ai pas trouvé de réponse précise. Essayez un des sujets ci-dessous ou contactez le responsable de la plateforme.";
+  for(const [kws,key] of KEYWORDS){
+    if(kws.some(k=>low.includes(k))){ reply=REPLIES[key]; break; }
+  }
+  setTimeout(()=>{
+    addMsg(reply,'bot');
+    // Remettre les topics si pas de résultat clair
+    if(reply.startsWith("Je n'ai pas")){
+      document.getElementById('chat-topics').style.display='flex';
+    }
+  },350);
+}
+
+// Back to top visibility
+window.addEventListener('scroll',()=>{
+  document.getElementById('back-top').classList.toggle('show', window.scrollY > 300);
+});
+</script>
 </body>
 </html>"""
 
