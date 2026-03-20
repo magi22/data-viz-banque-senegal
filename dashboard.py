@@ -392,6 +392,13 @@ def creer_dashboard(server):
                     dcc.Upload(id="ul-bar", accept=".csv,.xlsx,.xls", multiple=False,
                                children=html.Span("📂 Changer les données", className="changer-btn")),
                     html.Div(id="ul-bar-msg", style={"fontSize":"11px","color":GREEN,"marginTop":"6px"}),
+                    html.Hr(className="sb-divider"),
+                    html.Span("Rapport PDF", className="sb-lbl"),
+                    dcc.Dropdown(id="bq-pdf", options=[], value=None, clearable=False,
+                                 style={"fontSize":"13px","marginBottom":"8px"}),
+                    dbc.Button("↓ Télécharger", id="btn-pdf", color="primary",
+                               style={"fontWeight":"700","borderRadius":"8px","width":"100%","fontSize":"13px"}),
+                    html.Div(id="msg-pdf", style={"marginTop":"6px"}),
                 ], className="sidebar"),
 
                 # ── MAIN AREA ─────────────────────────────
@@ -462,21 +469,6 @@ def creer_dashboard(server):
                                         html.Div([html.Span("Tableau des indicateurs",className="ch-t"),
                                                   html.Span("DATA TABLE",className="ch-b bb")],className="ch-h"),
                                         html.Div(id="tableau",className="tw"),
-                                    ], className="ch mb"),
-                                    html.Div([
-                                        html.Div([html.Span("📄 Rapport PDF par banque",className="ch-t")],className="ch-h"),
-                                        html.Div([
-                                            html.Div([
-                                                html.Label("Sélectionner une banque",
-                                                           style={"fontSize":"11px","fontWeight":"700","color":"#94a3b8",
-                                                                  "textTransform":"uppercase","letterSpacing":"1px","marginBottom":"8px","display":"block"}),
-                                                dcc.Dropdown(id="bq-pdf", options=[], value=None, clearable=False,
-                                                             style={"fontSize":"13px","marginBottom":"12px"}),
-                                                dbc.Button("↓ Télécharger le PDF", id="btn-pdf", color="primary",
-                                                           style={"fontWeight":"700","borderRadius":"8px","width":"100%"}),
-                                                html.Div(id="msg-pdf", style={"marginTop":"10px"}),
-                                            ], style={"maxWidth":"360px"}),
-                                        ], style={"padding":"20px 18px"}),
                                     ], className="ch mb"),
                                 ], className="content-frame"),
                             ),
