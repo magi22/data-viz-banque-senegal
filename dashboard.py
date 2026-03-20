@@ -119,9 +119,26 @@ html,body{font-family:'Inter',system-ui,sans-serif!important;background:#f1f5f9!
 .upload-info p{font-size:11px;color:#64748b;margin:0;line-height:1.7;}
 .ul-ok{font-size:12px;color:#10b981;font-weight:600;margin-top:10px;padding:8px 12px;background:#ecfdf5;border-radius:8px;}
 .ul-err{font-size:12px;color:#ef4444;font-weight:600;margin-top:10px;padding:8px 12px;background:#fef2f2;border-radius:8px;}
-.changer-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#64748b;cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #e2e8f0;background:#fff;transition:border-color .2s;}
+.changer-btn{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#64748b;cursor:pointer;padding:8px 12px;border-radius:8px;border:1px solid #e2e8f0;background:#f8fafc;transition:border-color .2s;width:100%;}
 .changer-btn:hover{border-color:#2563eb;color:#2563eb;}
-@media(max-width:900px){.kpi-strip{grid-template-columns:repeat(2,1fr);}.r2,.r3a{grid-template-columns:1fr;}.pad{padding:16px;}.filter-bar,.insights-row{padding:12px 16px;}.upload-section{padding:20px;}}
+/* LAYOUT SIDEBAR */
+.layout-wrapper{display:flex;align-items:flex-start;min-height:calc(100vh - 58px);}
+.sidebar{width:248px;min-width:248px;background:#fff;border-right:1px solid #e2e8f0;padding:20px 14px;position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;}
+.sidebar::-webkit-scrollbar{width:3px;}.sidebar::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:2px;}
+.sb-head{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#94a3b8;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid #f1f5f9;}
+.sb-block{margin-bottom:14px;}
+.sb-lbl{font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:block;}
+.sb-divider{border:none;border-top:1px solid #f1f5f9;margin:16px 0;}
+/* MAIN AREA */
+.main-area{flex:1;min-width:0;background:#f1f5f9;}
+.content-frame{max-width:1140px;margin:0 auto;padding:20px 20px 40px;}
+/* TABS */
+.tab-strip{display:flex;gap:2px;padding:16px 20px 0;background:#f1f5f9;border-bottom:1px solid #e2e8f0;overflow-x:auto;}
+.tab-strip::-webkit-scrollbar{height:3px;}
+.t-btn{font-size:12px;font-weight:600;color:#64748b;padding:10px 20px;background:#fff;border:1px solid #e2e8f0;border-bottom:1px solid #fff;border-radius:10px 10px 0 0;cursor:pointer;white-space:nowrap;transition:.15s;}
+.t-btn.on{color:#0f766e;font-weight:700;border-color:#e2e8f0;border-bottom-color:#fff;background:#fff;}
+.tab-body{background:#fff;padding:20px;}
+@media(max-width:900px){.kpi-strip{grid-template-columns:repeat(2,1fr);}.r2,.r3a{grid-template-columns:1fr;}.layout-wrapper{flex-direction:column;}.sidebar{width:100%;min-width:unset;position:static;height:auto;border-right:none;border-bottom:1px solid #e2e8f0;}.content-frame{padding:12px;}.insights-row{padding:12px 16px;}.upload-section{padding:20px;}}
 """
 
 
@@ -333,71 +350,141 @@ def creer_dashboard(server):
 
         # DASHBOARD SECTION
         html.Div(id="dashboard-section", style={"display":"none"}, children=[
-
-            # FILTER BAR
             html.Div([
-                html.Div([html.Label("Année"),
-                          dcc.Dropdown(id="f-an",options=[],value=None,clearable=False,style={"minWidth":"95px"})],className="fg"),
-                html.Div([html.Label("Banque(s)"),
-                          dcc.Dropdown(id="f-bq",options=[],value=None,multi=True,style={"minWidth":"260px"})],className="fg"),
-                html.Div([html.Label("Groupe"),
-                          dcc.Dropdown(id="f-gr",options=[],value="Tous",clearable=False,style={"minWidth":"130px"})],className="fg"),
-                html.Div([html.Label("Indicateur"),
-                          dcc.Dropdown(id="f-ind",
-                                       options=[{"label":"Bilan","value":"bilan"},{"label":"PNB","value":"pnb"},
-                                                {"label":"Emploi","value":"emploi"},{"label":"Ressources","value":"ressources"},
-                                                {"label":"Fonds propres","value":"fonds_propres"},{"label":"Résultat net","value":"resultat_net"},
-                                                {"label":"ROA","value":"roa"},{"label":"Solvabilité","value":"solvabilite"},
-                                                {"label":"Coeff. exploit.","value":"coeff_exploit"},{"label":"Taux transfo.","value":"taux_transfo"},
-                                                {"label":"Liquidité","value":"liquidite"}],
-                                       value="bilan",clearable=False,style={"minWidth":"155px"})],className="fg"),
+
+                # ── SIDEBAR ──────────────────────────────
                 html.Div([
+                    html.Div("Filtres", className="sb-head"),
+                    html.Div([
+                        html.Span("Année d'analyse", className="sb-lbl"),
+                        dcc.Dropdown(id="f-an", options=[], value=None, clearable=False,
+                                     style={"fontSize":"13px"}),
+                    ], className="sb-block"),
+                    html.Div([
+                        html.Span("Banque(s)", className="sb-lbl"),
+                        dcc.Dropdown(id="f-bq", options=[], value=None, multi=True,
+                                     style={"fontSize":"13px"}),
+                    ], className="sb-block"),
+                    html.Div([
+                        html.Span("Groupe", className="sb-lbl"),
+                        dcc.Dropdown(id="f-gr", options=[], value="Tous", clearable=False,
+                                     style={"fontSize":"13px"}),
+                    ], className="sb-block"),
+                    html.Div([
+                        html.Span("Indicateur", className="sb-lbl"),
+                        dcc.Dropdown(id="f-ind",
+                            options=[
+                                {"label":"Bilan","value":"bilan"},
+                                {"label":"PNB","value":"pnb"},
+                                {"label":"Emploi","value":"emploi"},
+                                {"label":"Ressources","value":"ressources"},
+                                {"label":"Fonds propres","value":"fonds_propres"},
+                                {"label":"Résultat net","value":"resultat_net"},
+                                {"label":"ROA","value":"roa"},
+                                {"label":"Solvabilité","value":"solvabilite"},
+                                {"label":"Coeff. exploit.","value":"coeff_exploit"},
+                                {"label":"Taux transfo.","value":"taux_transfo"},
+                                {"label":"Liquidité","value":"liquidite"},
+                            ],
+                            value="bilan", clearable=False, style={"fontSize":"13px"}),
+                    ], className="sb-block"),
+                    html.Hr(className="sb-divider"),
                     dcc.Upload(id="ul-bar", accept=".csv,.xlsx,.xls", multiple=False,
                                children=html.Span("📂 Changer les données", className="changer-btn")),
-                    html.Div(id="ul-bar-msg", style={"fontSize":"11px","color":GREEN}),
-                ], style={"marginLeft":"auto","display":"flex","alignItems":"center","gap":"8px"}),
-            ], className="filter-bar"),
+                    html.Div(id="ul-bar-msg", style={"fontSize":"11px","color":GREEN,"marginTop":"6px"}),
+                ], className="sidebar"),
 
-            html.Div(id="kpi-strip", className="kpi-strip"),
-            html.Div(id="insights-row", className="insights-row"),
+                # ── MAIN AREA ─────────────────────────────
+                html.Div([
+                    # KPI + Insights
+                    html.Div(id="kpi-strip", className="kpi-strip"),
+                    html.Div(id="insights-row", className="insights-row"),
 
-            html.Div([
-                html.Div([
-                    ch("Classement des banques","RANKING","bb","g-rank",320),
-                    ch("Répartition par groupe","MARKET SHARE","bp","g-pie",320),
-                ], className="r3a"),
-                html.Div([
-                    ch("Évolution dans le temps","TREND ANALYSIS","bt","g-evol",300),
-                    ch("Distribution du ROA par groupe","RISK PROFILING","ba","g-box",300),
-                ], className="r3a"),
-                html.Div([
-                    ch("ROA vs Coeff. d'exploitation","SCATTER ANALYSIS","bb","g-scat",310),
-                    ch("Répartition hiérarchique du bilan","TREEMAP","bg","g-tree",310),
-                ], className="r2"),
-                html.Div([ch("Carte des établissements — Grand Dakar","GÉOGRAPHIE","bt","g-map",390)],className="mb"),
-                html.Div([
-                    html.Div([
-                        html.Div([html.Span("Score de positionnement global",className="ch-t"),
-                                  html.Span("COMPETITIVE INTELLIGENCE",className="ch-b bp")],className="ch-h"),
-                        html.Div(dcc.Graph(id="g-score",config={"displayModeBar":False}),className="ch-bd"),
-                    ], className="ch"),
-                ], className="mb"),
-                html.Div([
-                    html.Div([html.Span("Tableau des indicateurs",className="ch-t"),
-                              html.Span("DATA TABLE",className="ch-b bb")],className="ch-h"),
-                    html.Div(id="tableau",className="tw"),
-                ], className="ch mb"),
-                html.Div([
-                    html.Div([html.Span("📄 Rapport PDF par banque",className="ch-t")],className="ch-h"),
-                    html.Div([
-                        dcc.Dropdown(id="bq-pdf",options=[],value=None,clearable=False,
-                                     style={"minWidth":"200px","flex":"1"}),
-                        dbc.Button("↓ Télécharger",id="btn-pdf",color="primary",
-                                   style={"fontWeight":"700","borderRadius":"8px","flexShrink":"0"}),
-                        html.Div(id="msg-pdf"),
-                    ], className="pdf-r"),
-                ], className="ch mb"),
-            ], className="pad"),
+                    # Tabs
+                    dcc.Tabs(id="tabs", value="t1",
+                        style={"background":"#f1f5f9","borderBottom":"2px solid #e2e8f0","paddingLeft":"20px"},
+                        children=[
+                            dcc.Tab(label="Vue d'ensemble", value="t1",
+                                style={"fontSize":"12px","fontWeight":"600","color":"#64748b",
+                                       "padding":"10px 20px","border":"1px solid #e2e8f0",
+                                       "borderBottom":"2px solid #f1f5f9","borderRadius":"10px 10px 0 0",
+                                       "background":"#fff","marginRight":"2px"},
+                                selected_style={"fontSize":"12px","fontWeight":"700","color":"#0f766e",
+                                                "padding":"10px 20px","border":"1px solid #e2e8f0",
+                                                "borderBottom":"2px solid #fff","borderRadius":"10px 10px 0 0",
+                                                "background":"#fff","marginRight":"2px"},
+                                children=html.Div([
+                                    html.Div([
+                                        ch("Classement des banques","RANKING","bb","g-rank",350),
+                                        ch("Parts de marché par groupe","MARKET SHARE","bp","g-pie",350),
+                                    ], className="r3a"),
+                                    html.Div([
+                                        ch("Évolution dans le temps","TREND ANALYSIS","bt","g-evol",300),
+                                        ch("Distribution du ROA par groupe","RISK PROFILING","ba","g-box",300),
+                                    ], className="r3a"),
+                                ], className="content-frame"),
+                            ),
+                            dcc.Tab(label="Analyse approfondie", value="t2",
+                                style={"fontSize":"12px","fontWeight":"600","color":"#64748b",
+                                       "padding":"10px 20px","border":"1px solid #e2e8f0",
+                                       "borderBottom":"2px solid #f1f5f9","borderRadius":"10px 10px 0 0",
+                                       "background":"#fff","marginRight":"2px"},
+                                selected_style={"fontSize":"12px","fontWeight":"700","color":"#0f766e",
+                                                "padding":"10px 20px","border":"1px solid #e2e8f0",
+                                                "borderBottom":"2px solid #fff","borderRadius":"10px 10px 0 0",
+                                                "background":"#fff","marginRight":"2px"},
+                                children=html.Div([
+                                    html.Div([
+                                        ch("ROA vs Coeff. d'exploitation","SCATTER ANALYSIS","bb","g-scat",320),
+                                        ch("Répartition hiérarchique du bilan","TREEMAP","bg","g-tree",320),
+                                    ], className="r2"),
+                                    html.Div([ch("Carte des établissements — Grand Dakar","GÉOGRAPHIE","bt","g-map",400)], className="mb"),
+                                    html.Div([
+                                        html.Div([
+                                            html.Div([html.Span("Score de positionnement global",className="ch-t"),
+                                                      html.Span("COMPETITIVE INTELLIGENCE",className="ch-b bp")],className="ch-h"),
+                                            html.Div(dcc.Graph(id="g-score",config={"displayModeBar":False}),className="ch-bd"),
+                                        ], className="ch"),
+                                    ], className="mb"),
+                                ], className="content-frame"),
+                            ),
+                            dcc.Tab(label="Rapport & Données", value="t3",
+                                style={"fontSize":"12px","fontWeight":"600","color":"#64748b",
+                                       "padding":"10px 20px","border":"1px solid #e2e8f0",
+                                       "borderBottom":"2px solid #f1f5f9","borderRadius":"10px 10px 0 0",
+                                       "background":"#fff","marginRight":"2px"},
+                                selected_style={"fontSize":"12px","fontWeight":"700","color":"#0f766e",
+                                                "padding":"10px 20px","border":"1px solid #e2e8f0",
+                                                "borderBottom":"2px solid #fff","borderRadius":"10px 10px 0 0",
+                                                "background":"#fff","marginRight":"2px"},
+                                children=html.Div([
+                                    html.Div([
+                                        html.Div([html.Span("Tableau des indicateurs",className="ch-t"),
+                                                  html.Span("DATA TABLE",className="ch-b bb")],className="ch-h"),
+                                        html.Div(id="tableau",className="tw"),
+                                    ], className="ch mb"),
+                                    html.Div([
+                                        html.Div([html.Span("📄 Rapport PDF par banque",className="ch-t")],className="ch-h"),
+                                        html.Div([
+                                            html.Div([
+                                                html.Label("Sélectionner une banque",
+                                                           style={"fontSize":"11px","fontWeight":"700","color":"#94a3b8",
+                                                                  "textTransform":"uppercase","letterSpacing":"1px","marginBottom":"8px","display":"block"}),
+                                                dcc.Dropdown(id="bq-pdf", options=[], value=None, clearable=False,
+                                                             style={"fontSize":"13px","marginBottom":"12px"}),
+                                                dbc.Button("↓ Télécharger le PDF", id="btn-pdf", color="primary",
+                                                           style={"fontWeight":"700","borderRadius":"8px","width":"100%"}),
+                                                html.Div(id="msg-pdf", style={"marginTop":"10px"}),
+                                            ], style={"maxWidth":"360px"}),
+                                        ], style={"padding":"20px 18px"}),
+                                    ], className="ch mb"),
+                                ], className="content-frame"),
+                            ),
+                        ],
+                    ),
+                ], className="main-area"),
+
+            ], className="layout-wrapper"),
         ]),
     ])
 
